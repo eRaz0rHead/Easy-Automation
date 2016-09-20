@@ -1613,6 +1613,16 @@ string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
             case "IsConnected" : return Convert.ToString(_block.IsConnected);
         }
     }
+    if (_block is IMyLightingBlock)
+        switch (_requestedValue) {
+            case "Radius" : return Convert.ToString(_block.Radius);
+            case "Intensity" : return Convert.ToString(_block.Intensity);
+            case "BlinkInterval" : return Convert.ToString(_block.BlinkIntervalSeconds);
+            case "BlinkLength" : return Convert.ToString(_block.BlinkLenght);  // NOTE: Mispelled in API
+            case "BlinkOffset" : return Convert.ToString(_block.BlinkOffset);
+            // NOTE: FallOff is not exposed in the IMyLightingBlock interface.
+        }
+        
     return null;
 }
 
