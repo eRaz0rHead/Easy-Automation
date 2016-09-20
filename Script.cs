@@ -40,7 +40,7 @@ int tokenCount;
 int arguLoc;
 string lastToken;
 
-static char[] spaceSplit = new char[]{' '};
+static char[] spaceSplit = null; // Any whitespace should be fine!
 static char[] quoteSplit = new char[]{'"'};
 
 IMyTimerBlock easyAutoTB = null;
