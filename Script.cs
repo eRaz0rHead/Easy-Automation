@@ -1241,12 +1241,7 @@ void HandlePropertySetter()
             pnl.UpdateVisual();
         }else if(property == "Color" || property == "FontColor" || property == "BackgroundColor")
         {
-            string[] setToArray = setTo.Split(':');
-            int[] applyValue = new int[3];
-            applyValue[0] = int.Parse(setToArray[0]);
-            applyValue[1] = int.Parse(setToArray[1]);
-            applyValue[2] = int.Parse(setToArray[2]);
-            Color color = new Color(applyValue[0], applyValue[1], applyValue[2]);
+            color = ParseColor(setTo);
 
             if (blockList[i] is IMyTextPanel)
             {
@@ -1626,19 +1621,8 @@ string GetValue(IMyTerminalBlock _block, string _requestedValue)
                 value = Convert.ToString(_block.GetValue<Boolean>(_requestedValue));
                 break;
             case "Color"
-            {
-                string rawValue = Convert.ToString(_block.GetValue<Color>(_requestedValue));
-
-                int a = 0;
-                int b = 0;
-                while((a = rawValue.IndexOf(':', a)) != -1 && b < 3)
-                {
-                    value = value + rawValue.Substring(a, rawValue.IndexOf(' ', a) - a);
-                    b++;
-                    a++;
-                }
-                value = value.Trim(':');
-            }
+                value = FormatColor(Convert.ToString(_block.GetValue<Color>(_requestedValue)));
+                break;
         }
     }
     return value;
@@ -1899,3 +1883,25 @@ string MaybeBool (string text)
     
     return text;
 }
+
+Color ParseColor (string text)
+{
+    string[] rgb = text.Split(':');
+    return new Color(int.Parse(rgb[0]),int.Parse(rgb[1]), int.Parse(rgb[1]));
+}
+
+string FormatColor (string colorProperty)
+{
+    string value = "";
+    int a = 0;
+    int b = 0;
+    while((a = colorProperty.IndexOf(':', a)) != -1 && b < 3)
+    {
+        value = value + colorProperty.Substring(a, colorProperty.IndexOf(' ', a) - a);
+        b++;
+        a++;
+    }
+    value = value.Trim(':');
+    return value;
+}
+
