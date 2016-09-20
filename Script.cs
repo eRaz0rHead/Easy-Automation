@@ -950,19 +950,8 @@ void HandleIfWhen(string ifWhen)
     string oper = code[codeBlockName][currentLine - 1][isElseIf + 4];
     if(oper == "=" || oper == "!=")
     {
-        if(string.Equals(reqVals[0], "ON", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(reqVals[0], "OPEN", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(reqVals[0], "TRUE", StringComparison.OrdinalIgnoreCase))
-        {
-            reqVals[0] = "True";
-        }
-        else if(string.Equals(reqVals[0], "OFF", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(reqVals[0], "CLOSE", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(reqVals[0], "FALSE", StringComparison.OrdinalIgnoreCase))
-        {
-            reqVals[0] = "False";
-        }
-
+        reqVals[0] = MaybeBool(reqVals[0]);
+        
         for(int i = 0; i < actValList.Count; i++)
         {
             if((actValList[i][0] - 48) > 9 || (actValList[i][0] - 48) < 0) //if the first char of actVal is not a number 0-9
@@ -1271,18 +1260,7 @@ void HandlePropertySetter()
             }
         }else if(GetValue(blockList[i], property) != "")
         {
-            if(string.Equals(setTo, "ON", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(setTo, "OPEN", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(setTo, "TRUE", StringComparison.OrdinalIgnoreCase))
-            {
-                setTo = "True";
-            }
-            else if (string.Equals(setTo, "OFF", StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(setTo, "CLOSE", StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(setTo, "FALSE", StringComparison.OrdinalIgnoreCase))
-            {
-                setTo = "False";
-            }
+            setTo = MaybeBool(setTo);
 
             if(setTo == "True" || setTo == "False")
             {
@@ -1897,11 +1875,10 @@ bool BracketProblem(char opener, char closer, string text)
     int countOpeners = 0;
     int countClosers = 0;
 
-    foreach (char c in text)
+    foreach (char c in text) {
         if (c == opener) countOpeners++;
-
-    foreach (char c in text)
         if (c == closer) countClosers++;
+    }
 
     if (countOpeners != countClosers)
     {
@@ -1910,4 +1887,15 @@ bool BracketProblem(char opener, char closer, string text)
     }
 
     return isProb;
+}
+
+string MaybeBool (string text) 
+{
+    string[] truthy = { "ON", "OPEN", "TRUE" };
+    string[] falsy =  { "OFF", "CLOSE", "FALSE" };
+    
+    if Array.Exists(truthy, element => element == text.ToUpper()) return "True";
+    if Array.Exists(falsy, element => element == text.ToUpper()) return "False";
+    
+    return text;
 }
