@@ -1587,10 +1587,10 @@ string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
     if (_block is IMyShipController) {
         switch (_requestedValue) {
             case "IsUnderControl" : return Convert.ToString(_block.IsUnderControl);
-            case "ControlWheels" : return Convert.ToString(_block.ControlWheels);
-            case "ControlThrusters" : return Convert.ToString(_block.ControlThrusters);
-            case "HandBrake" : return Convert.ToString(_block.HandBrake);
-            case "DampenersOverride" : return Convert.ToString(_block.DampenersOverride);
+            // case "ControlWheels" : return Convert.ToString(_block.ControlWheels);
+            // case "ControlThrusters" : return Convert.ToString(_block.ControlThrusters);
+            // case "HandBrake" : return Convert.ToString(_block.HandBrake);
+            // case "DampenersOverride" : return Convert.ToString(_block.DampenersOverride);
         }
     }
     
@@ -1600,28 +1600,19 @@ string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
             case "PublicTitle" : return _block.GetPublicTitle();
             case "PrivateText" : return _block.GetPrivateText();
             case "PrivateTitle" : return _block.GetPrivateTitle();
-            case "CurrentlyShownImage" : return _block.CurrentlyShownImage;
+            // case "CurrentlyShownImage" : return _block.CurrentlyShownImage; 
             case "ShowText" : return Convert.ToString(_block.ShowText);
         }
     }
     
     if (_block is IMyShipConnector) {
         switch (_requestedValue) {
-            case "ThrowOut" : return Convert.ToString(_block.ThrowOut);
-            case "CollectAll" : return Convert.ToString(_block.CollectAll);
-            case "IsLocked" : return Convert.ToString(_block.IsLocked);
+            // case "ThrowOut" : return Convert.ToString(_block.ThrowOut);
+            // case "CollectAll" : return Convert.ToString(_block.CollectAll);
+            // case "IsLocked" : return Convert.ToString(_block.IsLocked);
             case "IsConnected" : return Convert.ToString(_block.IsConnected);
         }
     }
-    if (_block is IMyLightingBlock)
-        switch (_requestedValue) {
-            case "Radius" : return Convert.ToString(_block.Radius);
-            case "Intensity" : return Convert.ToString(_block.Intensity);
-            case "BlinkInterval" : return Convert.ToString(_block.BlinkIntervalSeconds);
-            case "BlinkLength" : return Convert.ToString(_block.BlinkLenght);  // NOTE: Mispelled in API
-            case "BlinkOffset" : return Convert.ToString(_block.BlinkOffset);
-            // NOTE: FallOff is not exposed in the IMyLightingBlock interface.
-        }
         
     return null;
 }
