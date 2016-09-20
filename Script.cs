@@ -1582,24 +1582,58 @@ int ArguVarLoc(string _lastToken)
     }else return -1;
 }
 
+string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
+    // Note: Keen will not allow MemberInfo inside scripts, so we can't use reflection.
+    if (_block is IMyShipController) {
+        string[] props = { "IsUnderControl", 
+                           "ControlWheels", 
+                           "ControlThrusters",
+                           "HandBrake",
+                           "DampenersOverride" };
+   
+        switch (_requestedValue) {
+            case "IsUnderControl" : return Convert.ToString(_block.IsUnderControl);
+            case "ControlWheels" : return Convert.ToString(_block.ControlWheels);
+            case "ControlThrusters" : return Convert.ToString(_block.ControlThrusters);
+            case "HandBrake" : return Convert.ToString(_block.HandBrake);
+            case "DampenersOverride" : return Convert.ToString(_block.DampenersOverride);
+        }
+    }
+    
+    return null;
+}
+
 string GetValue(IMyTerminalBlock _block, string _requestedValue)
 {
-    string value = "";
-
+    string value = GetHiddenValue(_block, _requestedValue);
+    
+    if (value != null) return value;
+    
+    value = "";
+    
     var properties = new List<ITerminalProperty>();
     _block.GetProperties(properties);
-    int i = 0;
-    while (i < properties.Count)
-    {
-        if (properties[i].Id == _requestedValue)
+    
+    var found = properties.Find(
+        delegate(ITerminalProperty prop)
         {
-            if(properties[i].TypeName == "Single")
+            return prop.Id == _requestedValue;
+        }
+    );
+    
+    if (found != null) {
+        switch (found.TypeName) 
+        {
+            case "Single" :
                 value = Convert.ToString(_block.GetValue<float>(_requestedValue));
-            else if(properties[i].TypeName == "String")
+                break;
+            case "String" :
                 value = Convert.ToString(_block.GetValue<String>(_requestedValue));
-            else if(properties[i].TypeName == "Boolean")
+                break;
+            case "Boolean"
                 value = Convert.ToString(_block.GetValue<Boolean>(_requestedValue));
-            else if(properties[i].TypeName == "Color")
+                break;
+            case "Color"
             {
                 string rawValue = Convert.ToString(_block.GetValue<Color>(_requestedValue));
 
@@ -1613,8 +1647,7 @@ string GetValue(IMyTerminalBlock _block, string _requestedValue)
                 }
                 value = value.Trim(':');
             }
-            return value;
-        }else i++;
+        }
     }
     return value;
 }
