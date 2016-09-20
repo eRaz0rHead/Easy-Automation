@@ -1585,12 +1585,6 @@ int ArguVarLoc(string _lastToken)
 string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
     // Note: Keen will not allow MemberInfo inside scripts, so we can't use reflection.
     if (_block is IMyShipController) {
-        string[] props = { "IsUnderControl", 
-                           "ControlWheels", 
-                           "ControlThrusters",
-                           "HandBrake",
-                           "DampenersOverride" };
-   
         switch (_requestedValue) {
             case "IsUnderControl" : return Convert.ToString(_block.IsUnderControl);
             case "ControlWheels" : return Convert.ToString(_block.ControlWheels);
@@ -1600,6 +1594,25 @@ string GetHiddenValue(IMyTerminalBlock _block, string _requestedValue) {
         }
     }
     
+    if (_block is IMyTextPanel) {
+        switch (_requestedValue) {
+            case "PublicText" : return _block.GetPublicText();
+            case "PublicTitle" : return _block.GetPublicTitle();
+            case "PrivateText" : return _block.GetPrivateText();
+            case "PrivateTitle" : return _block.GetPrivateTitle();
+            case "CurrentlyShownImage" : return _block.CurrentlyShownImage;
+            case "ShowText" : return Convert.ToString(_block.ShowText);
+        }
+    }
+    
+    if (_block is IMyShipConnector) {
+        switch (_requestedValue) {
+            case "ThrowOut" : return Convert.ToString(_block.ThrowOut);
+            case "CollectAll" : return Convert.ToString(_block.CollectAll);
+            case "IsLocked" : return Convert.ToString(_block.IsLocked);
+            case "IsConnected" : return Convert.ToString(_block.IsConnected);
+        }
+    }
     return null;
 }
 
